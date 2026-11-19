@@ -1,0 +1,1 @@
+mysqldump -u root -p --all-databases > all_databases_backup.sql

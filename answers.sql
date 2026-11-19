@@ -1,0 +1,74 @@
+-- ============================================================================
+-- Assignment: Databases Week 8 - Database Backup and Recovery
+-- File: answers.sql
+-- ============================================================================
+
+-- ============================================================================
+-- Question 1: Creating a Complete Database Backup
+-- ============================================================================
+-- Command:
+-- mysqldump -u root -p sales > sales_backup.sql
+--
+-- Explanation:
+-- * `mysqldump` is MySQL's logical backup utility that outputs SQL statements
+--   capable of recreating database objects and data.
+-- * `-u root` specifies `root` as the MySQL username.
+-- * `-p` instructs `mysqldump` to interactively prompt for the password rather
+--   than exposing it on the command line or in shell history.
+-- * `sales` targets the `sales` database.
+-- * `> sales_backup.sql` redirects the generated SQL dump to `sales_backup.sql`.
+--
+-- Why regular database backups are important:
+-- Regular backups protect against data loss caused by accidental deletions or
+-- bad updates (`DROP`/`DELETE`/`UPDATE` without proper `WHERE` clauses),
+-- hardware or storage failures, software bugs, ransomware/security incidents,
+-- and failed schema migrations. They also enable point-in-time recovery,
+-- testing in isolated environments, and compliance with retention policies.
+
+
+-- ============================================================================
+-- Question 2: Backing Up All Databases
+-- ============================================================================
+-- Command:
+-- mysqldump -u root -p --all-databases > all_databases_backup.sql
+--
+-- Explanation:
+-- * `--all-databases` exports every database managed by the MySQL server
+--   instance (including application databases and system schemas such as
+--   `mysql` user/privilege tables, depending on version/configuration).
+-- * `-u root` authenticates as `root`.
+-- * `-p` prompts interactively for the password.
+-- * `> all_databases_backup.sql` saves the full server dump to
+--   `all_databases_backup.sql`.
+--
+-- Why backing up all databases is important before migrating to another server:
+-- A server migration affects the entire MySQL instance rather than just one
+-- schema. Backing up all databases ensures no companion or dependent database
+-- is left behind, preserves cross-database relationships or references if
+-- present, retains server-level metadata/privileges where applicable, and
+-- provides a complete rollback point if the migration encounters issues.
+
+
+-- ============================================================================
+-- Question 3: Generating a Data-Only Database Backup
+-- ============================================================================
+-- Note: The attached assignment document ends after Question 2, while the
+-- submission instructions and learning objectives mention three questions and
+-- data-only backups. Below is the standard `mysqldump` command for a
+-- data-only backup of the `sales` database using `--no-create-info`.
+--
+-- Command:
+-- mysqldump -u root -p --no-create-info sales > sales_data_only.sql
+--
+-- Explanation:
+-- * `--no-create-info` (alias `-t`) omits `CREATE TABLE` statements and
+--   exports only `INSERT` statements for table rows.
+-- * `-u root` and `-p` authenticate as `root` and prompt for the password.
+-- * `sales` specifies the target database, and `> sales_data_only.sql`
+--   writes the data-only SQL output to `sales_data_only.sql`.
+--
+-- When data-only backups are useful:
+-- Data-only dumps are helpful when target tables already exist (for example,
+-- after running schema/DDL scripts or adjusting column definitions/indexes on
+-- a staging or migration target) and you want to populate or refresh rows
+-- without recreating table structures.

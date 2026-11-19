@@ -1,0 +1,1 @@
+mysqldump -u root -p --no-create-info sales > sales_data_only.sql
